@@ -1,7 +1,12 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 import logger from 'use-reducer-logger';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Product from '../components/Product';
+import { Helmet } from 'react-helmet-async';
+import LoadingBox from '../components/LoadingBox';
+import MessageBox from '../components/MessageBox';
 // import data from '../data';
 
 const reducer = (state, action) => {
@@ -39,34 +44,30 @@ function HomeScreen() {
     fetchData();
   }, []);
 
-
-
   return (
-    <div>
+    <div >
+      <Helmet>
+        <title>Amazona</title>
+      </Helmet>
       <h1>Featured Products</h1>
       <div className="products" >
         {
-          loading ? (<div>Loading</div>)
-            : error ? (<div>{error}</div>)
-              :(
-            
-          products.map((product) => {
-            return (
-              <div className="product" key={product.slug}>
-                <Link to={`/product/${product.slug}`}>
-                  <img src={product.image} alt={product.name} />
-                </Link>
-                <div className="product-info">
-                  <Link to={`/product/${product.slug}`}>
-                    <p>{product.name} </p>
-                  </Link>
-                  <p><strong> ${product.price}</strong> </p>
-                  <button>Add to cart</button>
-                </div>
-              </div>
-            )
-          })
-        )}
+          loading ? (
+            <LoadingBox />
+          )
+            : error ? (
+              <MessageBox variant='danger'>{error}</MessageBox>
+            ) : (
+              <Row>
+                {
+                  products.map((product) => (
+                    <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+                      <Product product={product} />
+                    </Col>
+                  ))
+                }
+              </Row>
+            )}
       </div>
     </div>
   )
