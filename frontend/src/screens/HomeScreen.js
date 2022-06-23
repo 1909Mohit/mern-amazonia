@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
 import logger from 'use-reducer-logger';
 import Row from 'react-bootstrap/Row';
@@ -20,8 +20,7 @@ const reducer = (state, action) => {
     default:
       return state;
   }
-}
-
+};
 
 function HomeScreen() {
   const [{ loading, error, products }, dispatch] = useReducer(logger(reducer), {
@@ -39,38 +38,33 @@ function HomeScreen() {
       } catch (err) {
         dispatch({ type: 'FETCH_FAIL', payload: err.message });
       }
+
       // setProducts(result.data);
     };
     fetchData();
   }, []);
-
   return (
-    <div >
+    <div>
       <Helmet>
         <title>Amazona</title>
       </Helmet>
       <h1>Featured Products</h1>
-      <div className="products" >
-        {
-          loading ? (
-            <LoadingBox />
-          )
-            : error ? (
-              <MessageBox variant='danger'>{error}</MessageBox>
-            ) : (
-              <Row>
-                {
-                  products.map((product) => (
-                    <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
-                      <Product product={product} />
-                    </Col>
-                  ))
-                }
-              </Row>
-            )}
+      <div className="products">
+        {loading ? (
+          <LoadingBox />
+        ) : error ? (
+          <MessageBox variant="danger">{error}</MessageBox>
+        ) : (
+          <Row>
+            {products.map((product) => (
+              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+                <Product product={product}></Product>
+              </Col>
+            ))}
+          </Row>
+        )}
       </div>
     </div>
-  )
+  );
 }
-
-export default HomeScreen
+export default HomeScreen;
